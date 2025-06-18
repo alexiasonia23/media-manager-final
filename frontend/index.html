@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html ng-app="MediaApp">
+<head>
+    <meta charset="utf-8">
+    <title>Media Manager</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="app/css/style.css">
+    <style>
+        .text-danger {
+            display: none;
+        }
+    </style>
+</head>
+<body ng-controller="LoginController" class="bg-light">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow-sm">
+                    <div class="card-header text-center">
+                        <h3>Media Manager Login</h3>
+                    </div>
+                    <div class="card-body">
+                        <form ng-submit="login()">
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <input type="text" id="username" ng-model="user.username" class="form-control" placeholder="Enter username" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" id="password" ng-model="user.password" class="form-control" placeholder="Enter password" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Login</button>
+                        </form>
+                        <p class="text-danger mt-3 text-center" ng-if="error">{{ error }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="app/app.module.js"></script>
+    <script src="app/services/apiService.js"></script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html ng-app="mediaApp">
+<head>
+  <meta charset="utf-8">
+  <title>Admin Panel</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script src="app/app.module.js"></script>
+  <script src="app/services/apiService.js"></script>
+  <script src="app/controllers/adminController.js"></script>
+</head>
+<body ng-controller="AdminController">
+  <h2>Admin Panel</h2>
+
+  <h3>Create User</h3>
+  <form ng-submit="createUser()">
+    <input type="text" ng-model="newUser.name" placeholder="Name" required>
+ <input type="email" ng-model="newUser.email" placeholder="Email" required>
+    <input type="password" ng-model="newUser.passwd" placeholder="Password" required>
+    <button type="submit">Create</button>
+  </form>
+
+  <h3>User List</h3>
+  <table border="1">
+    <tr>
+      <th>ID</th><th>Name</th><th>Email</th><th>Action</th>
+    </tr>
+    <tr ng-repeat="user in users">
+      <td>{{ user.id }}</td>
+      <td>{{ user.name }}</td>
+      <td>{{ user.email }}</td>
+      <td><button ng-click="deleteUser(user.id)">Delete</button></td>
+    </tr>
+  </table>
+
+  <h3>Categories</h3>
+  <form ng-submit="addCategory()">
+    <input type="text" ng-model="newCategory.name" placeholder="Category Name" required>
+    <button type="submit">Add Category</button>
+  </form>
+  <table border="1">
+    <tr>
+      <th>ID</th><th>Name</th><th>Action</th>
+    </tr>
+    <tr ng-repeat="category in categories">
+      <td>{{ category.id }}</td>
+      <td>{{ category.name }}</td>
+      <td><button ng-click="deleteCategory(category.id)">Delete</button></td>
+    </tr>
+  </table>
+</body>
+</html>
