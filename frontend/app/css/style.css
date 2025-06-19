@@ -28,3 +28,32 @@
     font-size: 0.875rem;
     margin-top: 0.5rem;
 } 
+
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.card {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.card-header {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+}
+
+button {
+    min-width: 80px;
+}
+
+.text-danger {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}

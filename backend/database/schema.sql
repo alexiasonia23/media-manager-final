@@ -1,10 +1,11 @@
--- Create database if it doesn't exist
+
+-- Create database
 CREATE DATABASE IF NOT EXISTS multimedia_db;
 USE multimedia_db;
 
 -- Users table
 CREATE TABLE IF NOT EXISTS users (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
@@ -23,7 +24,7 @@ CREATE TABLE IF NOT EXISTS sessions (
 
 -- Categories table
 CREATE TABLE IF NOT EXISTS categories (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -31,25 +32,26 @@ CREATE TABLE IF NOT EXISTS categories (
 
 -- Videos table
 CREATE TABLE IF NOT EXISTS videos (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     url VARCHAR(255) NOT NULL,
-    category_id INT NOT NULL,
+    category_id INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE RESTRICT
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
 );
 
--- Insert default admin user (password: admin123)
-INSERT INTO users (name, email, password) 
+-- Insert default admin user
+INSERT INTO users (name, email, password)
 VALUES ('Admin', 'admin@example.com', 'admin123')
-ON DUPLICATE KEY UPDATE name = 'Admin';
+ON DUPLICATE KEY UPDATE name = VALUES(name);
 
--- Insert some default categories
+-- Insert default categories
 INSERT INTO categories (name) VALUES 
 ('Movies'),
 ('TV Shows'),
 ('Music'),
 ('Documentaries'),
+('Cooking'),
 ('Educational')
 ON DUPLICATE KEY UPDATE name = VALUES(name);

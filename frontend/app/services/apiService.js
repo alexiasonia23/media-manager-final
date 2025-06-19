@@ -1,40 +1,49 @@
+
 angular.module('MediaApp')
-    .service('apiService', ['$http', function($http) {
-        const API_URL = 'http://localhost:3000';
+  .service('apiService', ['$http', function($http) {
+    const API_URL = 'http://localhost:3000';
 
-        this.login = function(user) {
-            return $http.post(`${API_URL}/auth/login`, user);
-        };
+    // Login user
+    this.login = function(credentials) {
+      return $http.post(`${API_URL}/auth/login`, credentials);
+    };
 
-        this.getVideos = function() {
-            return $http.get(`${API_URL}/videos`);
-        };
+    // Users
+    this.getUsers = function () {
+      return $http.get(API_URL + '/users');
+    };
 
-        this.getCategories = function() {
-            return $http.get(`${API_URL}/categories`);
-        };
+    this.addUser = function (user) {
+      return $http.post(API_URL + '/users', user);
+    };
 
-        this.addVideo = function(video) {
-            return $http.post(`${API_URL}/videos`, video);
-        };
+    this.deleteUser = function (id) {
+      return $http.delete(API_URL + '/users/' + id);
+    };
 
-        this.updateVideo = function(id, video) {
-            return $http.put(`${API_URL}/videos/${id}`, video);
-        };
+    // Categories
+    this.getCategories = function () {
+      return $http.get(API_URL + '/categories');
+    };
 
-        this.deleteVideo = function(id) {
-            return $http.delete(`${API_URL}/videos/${id}`);
-        };
+    this.addCategory = function (category) {
+      return $http.post(API_URL + '/categories', category);
+    };
 
-        this.addCategory = function(category) {
-            return $http.post(`${API_URL}/categories`, category);
-        };
+    this.deleteCategory = function (id) {
+      return $http.delete(API_URL + '/categories/' + id);
+    };
 
-        this.updateCategory = function(id, category) {
-            return $http.put(`${API_URL}/categories/${id}`, category);
-        };
+    // Videos
+    this.getVideos = function () {
+      return $http.get(API_URL + '/videos');
+    };
 
-        this.deleteCategory = function(id) {
-            return $http.delete(`${API_URL}/categories/${id}`);
-        };
-    }]);
+    this.addVideo = function (video) {
+      return $http.post(API_URL + '/videos', video);
+    };
+
+    this.deleteVideo = function (id) {
+      return $http.delete(API_URL + '/videos/' + id);
+    };
+  }]);

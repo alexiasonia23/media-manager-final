@@ -1,51 +1,104 @@
 <!DOCTYPE html>
-<html ng-app="mediaApp">
+<html ng-app="MediaApp">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   <title>Admin Panel</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
   <script src="app/app.module.js"></script>
   <script src="app/services/apiService.js"></script>
   <script src="app/controllers/adminController.js"></script>
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .navbar {
+      margin-bottom: 2rem;
+    }
+    .card {
+      margin-bottom: 2rem;
+    }
+    h4 {
+      margin-bottom: 1rem;
+    }
+    .btn + .btn {
+      margin-left: 0.5rem;
+    }
+  </style>
 </head>
 <body ng-controller="AdminController">
-  <h2>Admin Panel</h2>
+  <nav class="navbar navbar-dark bg-dark">
+    <span class="navbar-brand mb-0 h1 text-white">
+      🎬 Media Manager
+    </span>
+    <button class="btn btn-outline-light">🔓 Logout</button>
+  </nav>
 
-  <h3>Create User</h3>
-  <form ng-submit="createUser()">
-    <input type="text" ng-model="newUser.name" placeholder="Name" required>
- <input type="email" ng-model="newUser.email" placeholder="Email" required>
-    <input type="password" ng-model="newUser.passwd" placeholder="Password" required>
-    <button type="submit">Create</button>
-  </form>
+  <div class="container">
+    <!-- USERS -->
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        👤 Create User
+      </div>
+      <div class="card-body">
+        <form class="form-inline mb-3" ng-submit="addUser()">
+          <input class="form-control mr-2" placeholder="Name" ng-model="newUser.name" required>
+          <input class="form-control mr-2" placeholder="Email" ng-model="newUser.email" required>
+          <input class="form-control mr-2" placeholder="Password" type="password" ng-model="newUser.password" required>
+          <button class="btn btn-success">➕ Create</button>
+        </form>
+        <h5>👥 User List</h5>
+        <table class="table table-bordered table-striped">
+          <thead>
+            <tr><th>ID</th><th>Name</th><th>Email</th><th>Action</th></tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="user in users">
+              <td>{{ user.id }}</td>
+              <td>{{ user.name }}</td>
+              <td>{{ user.email }}</td>
+              <td><button class="btn btn-sm btn-danger" ng-click="deleteUser(user.id)">🗑 Delete</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-  <h3>User List</h3>
-  <table border="1">
-    <tr>
-      <th>ID</th><th>Name</th><th>Email</th><th>Action</th>
-    </tr>
-    <tr ng-repeat="user in users">
-      <td>{{ user.id }}</td>
-      <td>{{ user.name }}</td>
-      <td>{{ user.email }}</td>
-      <td><button ng-click="deleteUser(user.id)">Delete</button></td>
-    </tr>
-  </table>
+    <!-- CATEGORIES -->
+    <div class="card">
+      <div class="card-header bg-info text-white">📂 Categories</div>
+      <div class="card-body">
+        <form class="form-inline mb-3" ng-submit="addCategory()">
+          <input class="form-control mr-2" ng-model="newCategory" placeholder="New Category" required>
+          <button class="btn btn-primary">➕ Add Category</button>
+        </form>
+        <ul class="list-group">
+          <li class="list-group-item d-flex justify-content-between align-items-center" ng-repeat="cat in categories">
+            {{ cat.name }}
+            <button class="btn btn-sm btn-danger" ng-click="deleteCategory(cat.id)">🗑</button>
+          </li>
+        </ul>
+      </div>
+    </div>
 
-  <h3>Categories</h3>
-  <form ng-submit="addCategory()">
-    <input type="text" ng-model="newCategory.name" placeholder="Category Name" required>
-    <button type="submit">Add Category</button>
-  </form>
-  <table border="1">
-    <tr>
-      <th>ID</th><th>Name</th><th>Action</th>
-    </tr>
-    <tr ng-repeat="category in categories">
-      <td>{{ category.id }}</td>
-      <td>{{ category.name }}</td>
-      <td><button ng-click="deleteCategory(category.id)">Delete</button></td>
-    </tr>
-  </table>
+    <!-- VIDEOS -->
+    <div class="card">
+      <div class="card-header bg-warning text-dark">🎞 Videos</div>
+      <div class="card-body">
+        <form class="mb-3" ng-submit="addVideo()">
+          <input class="form-control mb-2" placeholder="Title" ng-model="video.title" required>
+          <input class="form-control mb-2" placeholder="URL" ng-model="video.url" required>
+          <select class="form-control mb-2" ng-model="video.categoryId" ng-options="cat.id as cat.name for cat in categories" required></select>
+          <button class="btn btn-warning">➕ Add Video</button>
+        </form>
+        <ul class="list-group">
+          <li class="list-group-item d-flex justify-content-between align-items-center" ng-repeat="v in videos">
+            <span>{{ v.title }} ({{ v.categoryName || 'Uncategorized' }})</span>
+            <button class="btn btn-sm btn-danger" ng-click="deleteVideo(v.id)">🗑</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

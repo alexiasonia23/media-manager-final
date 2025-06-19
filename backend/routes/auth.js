@@ -8,33 +8,35 @@ let nextVideoId = 2;
 // backend/routes/auth.js
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
-const db = require('../config/database');
+const { pool } = require('../config/database');
 const router = express.Router();
 
 // Login endpoint
-router.post('/auth/login', (req, res) => {
+router.post('/login', async (req, res) => {
+    console.log('BODY:',req.body);
     const { username, password } = req.body;
     
+    console.log('Login attempt:', { username, password }); // Debug log
+    
     if (!username || !password) {
+        console.log('Missing credentials');
         return res.status(400).json({ 
             success: false,
             message: 'Username and password are required' 
         });
     }
     
-    // Check user credentials in database
-    const query = 'SELECT id, name, email, password FROM users WHERE email = ?';
-    
-    db.query(query, [username], (err, results) => {
-        if (err) {
-            console.error('Database error:', err);
-            return res.status(500).json({ 
-                success: false,
-                message: 'Database error' 
-            });
-        }
+    try {
+        // Check user credentials in database
+        const [results] = await pool.query(
+            'SELECT id, name, email, password FROM users WHERE email = ?',
+            [username]
+        );
+        
+        console.log('Database results:', results); // Debug log
         
         if (results.length === 0) {
+            console.log('No user found with email:', username);
             return res.status(401).json({ 
                 success: false,
                 message: 'Invalid credentials' 
@@ -45,6 +47,10 @@ router.post('/auth/login', (req, res) => {
         
         // In production, use bcrypt to compare hashed passwords
         if (dbUser.password !== password) {
+            console.log('Password mismatch:', { 
+                provided: password, 
+                stored: dbUser.password 
+            }); // Debug log
             return res.status(401).json({ 
                 success: false,
                 message: 'Invalid credentials' 
@@ -56,32 +62,33 @@ router.post('/auth/login', (req, res) => {
         const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
         
         // Store session in database
-        const sessionQuery = 'INSERT INTO sessions (id, user_id, expires_at) VALUES (?, ?, ?)';
+        await pool.query(
+            'INSERT INTO sessions (id, user_id, expires_at) VALUES (?, ?, ?)',
+            [sessionId, dbUser.id, expiresAt]
+        );
         
-        db.query(sessionQuery, [sessionId, dbUser.id, expiresAt], (err) => {
-            if (err) {
-                console.error('Session creation error:', err);
-                return res.status(500).json({ 
-                    success: false,
-                    message: 'Failed to create session' 
-                });
+        console.log('Login successful for user:', dbUser.email);
+        
+        res.json({ 
+            success: true,
+            session_id: sessionId,
+            user: {
+                id: dbUser.id,
+                name: dbUser.name,
+                email: dbUser.email
             }
-            
-            res.json({ 
-                success: true,
-                session_id: sessionId,
-                user: {
-                    id: dbUser.id,
-                    name: dbUser.name,
-                    email: dbUser.email
-                }
-            });
         });
-    });
+    } catch (err) {
+        console.error('Login error:', err);
+        res.status(500).json({ 
+            success: false,
+            message: 'Internal server error' 
+        });
+    }
 });
 
 // Logout endpoint
-router.post('/auth/logout', (req, res) => {
+router.post('/logout', async (req, res) => {
     const { session_id } = req.body;
     
     if (!session_id) {
@@ -91,27 +98,25 @@ router.post('/auth/logout', (req, res) => {
         });
     }
     
-    // Remove session from database
-    const query = 'DELETE FROM sessions WHERE id = ?';
-    
-    db.query(query, [session_id], (err, result) => {
-        if (err) {
-            console.error('Logout error:', err);
-            return res.status(500).json({ 
-                success: false,
-                message: 'Logout failed' 
-            });
-        }
+    try {
+        // Remove session from database
+        await pool.query('DELETE FROM sessions WHERE id = ?', [session_id]);
         
         res.json({ 
             success: true,
             message: 'Successfully logged out' 
         });
-    });
+    } catch (err) {
+        console.error('Logout error:', err);
+        res.status(500).json({ 
+            success: false,
+            message: 'Logout failed' 
+        });
+    }
 });
 
 // Middleware to validate session
-function validateSession(req, res, next) {
+async function validateSession(req, res, next) {
     const sessionId = req.headers['x-session-id'];
     
     if (!sessionId) {
@@ -121,17 +126,12 @@ function validateSession(req, res, next) {
         });
     }
     
-    // Check if session exists and is not expired
-    const query = 'SELECT user_id FROM sessions WHERE id = ? AND expires_at > NOW()';
-    
-    db.query(query, [sessionId], (err, results) => {
-        if (err) {
-            console.error('Session validation error:', err);
-            return res.status(500).json({ 
-                success: false,
-                message: 'Session validation failed' 
-            });
-        }
+    try {
+        // Check if session exists and is not expired
+        const [results] = await pool.query(
+            'SELECT user_id FROM sessions WHERE id = ? AND expires_at > NOW()',
+            [sessionId]
+        );
         
         if (results.length === 0) {
             return res.status(401).json({ 
@@ -143,7 +143,13 @@ function validateSession(req, res, next) {
         req.userId = results[0].user_id;
         req.sessionId = sessionId;
         next();
-    });
+    } catch (err) {
+        console.error('Session validation error:', err);
+        res.status(500).json({ 
+            success: false,
+            message: 'Session validation failed' 
+        });
+    }
 }
 
 // Get all videos

@@ -1,47 +1,102 @@
 <!DOCTYPE html>
 <html ng-app="MediaApp">
 <head>
-    <meta charset="utf-8">
-    <title>Media Manager</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="app/css/style.css">
-    <style>
-        .text-danger {
-            display: none;
-        }
-    </style>
+  <meta charset="utf-8">
+  <title>Media Manager</title>
+
+  <!-- AngularJS -->
+  <!-- Bootstrap + Font Awesome -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="app/css/style.css">
+
+  <style>
+    body {
+      background: linear-gradient(to right, #3a7bd5, #00d2ff);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 400px;
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .login-card .form-control {
+      border-radius: 30px;
+    }
+
+    .login-card .btn-primary {
+      background-color: #007bff;
+      border-color: #007bff;
+      border-radius: 30px;
+      font-weight: bold;
+    }
+
+    .login-card .btn-primary:hover {
+      background-color: #0056b3;
+      border-color: #004a9f;
+    }
+
+    .login-icon {
+      font-size: 3rem;
+      color: #007bff;
+      margin-bottom: 1rem;
+    }
+
+    .login-title {
+      font-weight: bold;
+      color: #333;
+    }
+
+    .text-danger {
+      color: #dc3545;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+  </style>
 </head>
+
 <body ng-controller="LoginController" class="bg-light">
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6 col-lg-4">
-                <div class="card shadow-sm">
-                    <div class="card-header text-center">
-                        <h3>Media Manager Login</h3>
-                    </div>
-                    <div class="card-body">
-                        <form ng-submit="login()">
-                            <div class="form-group">
-                                <label for="username">Username</label>
-                                <input type="text" id="username" ng-model="user.username" class="form-control" placeholder="Enter username" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="password">Password</label>
-                                <input type="password" id="password" ng-model="user.password" class="form-control" placeholder="Enter password" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-block">Login</button>
-                        </form>
-                        <p class="text-danger mt-3 text-center" ng-if="error">{{ error }}</p>
-                    </div>
-                </div>
-            </div>
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-4">
+        <div class="card shadow-sm">
+          <div class="card-header text-center">
+            <h3>Media Manager Login</h3>
+          </div>
+          <div class="card-body">
+            <form ng-submit="login()">
+              <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" ng-model="user.username" class="form-control" placeholder="Enter username" required>
+              </div>
+              <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" ng-model="user.password" class="form-control" placeholder="Enter password" required>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Login</button>
+            </form>
+            <p class="text-danger mt-3 text-center" ng-if="error">{{ error }}</p>
+          </div>
         </div>
+      </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="app/app.module.js"></script>
-    <script src="app/services/apiService.js"></script>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <!-- Load our app files in the correct order -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script src="app/app.module.js"></script>
+  <script src="app/services/apiService.js"></script>
+  <script src="app/controllers/loginController.js"></script>
 </body>
 </html>

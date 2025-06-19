@@ -1,54 +1,40 @@
-require('dotenv').config();
 const express = require('express');
-const path = require('path');
 const cors = require('cors');
+const bodyParser = require('body-parser');
+const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 // Middleware
-app.use(express.json());
 app.use(cors());
-
-// Serve static files from frontend
+app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '../frontend')));
 
-// Import routes
+// Route imports
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const categoryRoutes = require('./routes/categories');
 const videoRoutes = require('./routes/videos');
 
-// Use routes
-app.use('/', authRoutes);
-app.use('/', userRoutes);
-app.use('/', categoryRoutes);
-app.use('/', videoRoutes);
+// Register routes
+app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
+app.use('/categories', categoryRoutes);
+app.use('/videos', videoRoutes);
 
-// Serve the frontend
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/index.html'));
+// Fallback: serve index.html for unmatched routes
+const frontendPath = path.join(__dirname, '../frontend');
+app.use((req, res, next) => {
+  if (req.method === 'GET' && !req.url.startsWith('/api')) {
+    res.sendFile(path.join(frontendPath, 'index.html'));
+  } else {
+    next();
+  }
 });
 
-app.get('/admin', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/admin.html'));
-});
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ message: 'Something went wrong!' });
-});
-
-// 404 handler
-app.use((req, res) => {
-    res.status(404).json({ message: 'Route not found' });
-});
-
+// Start server
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log(`Frontend available at: http://localhost:${PORT}`);
-    console.log(`Admin panel at: http://localhost:${PORT}/admin`);
+  console.log(`✅ Server running at http://localhost:${PORT}`);
 });
 
-module.exports = app;
