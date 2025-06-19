@@ -1,5 +1,5 @@
 angular.module('MediaApp')
-  .controller('LoginController', ['$scope', '$http', '$window', 'apiService', function ($scope, $http, $window, apiService) {
+  .controller('LoginController', ['$scope', '$http', '$window', 'apiService', function($scope, $http, $window, apiService) {
     $scope.user = {
       username: '',
       password: ''
@@ -15,7 +15,18 @@ angular.module('MediaApp')
       apiService.login($scope.user)
         .then(function (response) {
           if (response.data.success) {
-            $window.location.href = '/admin.html';
+            const email = response.data.user.email;
+            const sessionId = response.data.session_id;
+
+            // Store session ID
+            sessionStorage.setItem('session_id', sessionId);
+
+            // Redirect by user type
+            if (email === 'admin@example.com') {
+              $window.location.href = '/admin.html';
+            } else {
+              $window.location.href = '/user.html';
+            }
           } else {
             $scope.error = response.data.message || 'Login failed';
           }

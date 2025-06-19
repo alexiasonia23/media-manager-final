@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html ng-app="MediaApp">
+<title>MEDIA VIEWER</title>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Media Viewer</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script src="app/app.module.js"></script>
+  <script src="app/services/apiService.js"></script>
+  <script src="app/controllers/userController.js"></script>
+  <style>
+    body {
+      background-color: #f4f6f9;
+    }
+    .navbar {
+      margin-bottom: 2rem;
+    }
+    .category-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      background-color: #007bff;
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .video-card {
+      background: white;
+      border: 1px solid #ddd;
+      border-left: 5px solid #007bff;
+      padding: 10px 15px;
+      margin: 8px 0;
+      border-radius: 4px;
+    }
+    .no-results {
+      font-style: italic;
+      color: #777;
+    }
+  </style>
+</head>
+<body ng-controller="UserController">
+
+  <nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+      <span class="navbar-brand mb-0 h1">📺 Media Viewer</span>
+      <button class="btn btn-outline-light" ng-click="logout()">🔓 Logout</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <input type="text" class="form-control mb-4" ng-model="searchQuery" placeholder="🔍 Search videos by title...">
+
+    <div ng-if="isEmpty(groupedVideos)">
+      <p class="no-results">No videos found.</p>
+    </div>
+
+    <div ng-repeat="(category, videos) in groupedVideos">
+      <div class="category-title mt-4">{{ category }}</div>
+      <div class="video-card" ng-repeat="video in videos">
+        <strong>{{ video.title }}</strong><br>
+        <a ng-href="{{ video.url }}" target="_blank">{{ video.url }}</a>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

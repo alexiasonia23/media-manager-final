@@ -31,8 +31,13 @@
     <span class="navbar-brand mb-0 h1 text-white">
       🎬 Media Manager
     </span>
-    <button class="btn btn-outline-light">🔓 Logout</button>
+<button class="btn btn-outline-light" ng-click="logout()">🔓 Logout</button>
   </nav>
+
+  <div class="alert alert-success" ng-if="logoutMessage">
+  {{ logoutMessage }}
+</div>
+
 
   <div class="container">
     <!-- USERS -->
