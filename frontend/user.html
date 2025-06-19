@@ -1,65 +1,163 @@
 <!DOCTYPE html>
 <html ng-app="MediaApp">
-<title>MEDIA VIEWER</title>
-
 <head>
   <meta charset="UTF-8">
   <title>Media Viewer</title>
+
+  <!-- Bootstrap & FontAwesome -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="app/css/style.css"> <!-- Same CSS used by admin -->
+
+  <!-- AngularJS -->
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
   <script src="app/app.module.js"></script>
   <script src="app/services/apiService.js"></script>
   <script src="app/controllers/userController.js"></script>
+
   <style>
-    body {
+    .admin-background {
       background-color: #f4f6f9;
+      min-height: 100vh;
     }
-    .navbar {
-      margin-bottom: 2rem;
+
+    .sidebar {
+      height: 100vh;
+      background-color: #343a40;
+      color: #fff;
+      padding: 20px;
+      position: fixed;
+      width: 250px;
+      top: 0;
+      left: 0;
     }
-    .category-title {
-      font-size: 1.3rem;
-      font-weight: bold;
-      background-color: #007bff;
-      color: white;
+
+    .sidebar-header h3 {
+      color: #fff;
+      margin-bottom: 30px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar ul li {
+      margin-bottom: 15px;
+    }
+
+    .sidebar ul li a {
+      color: #ccc;
+      text-decoration: none;
+      display: block;
       padding: 10px;
       border-radius: 5px;
     }
-    .video-card {
-      background: white;
-      border: 1px solid #ddd;
-      border-left: 5px solid #007bff;
-      padding: 10px 15px;
-      margin: 8px 0;
-      border-radius: 4px;
+
+    .sidebar ul li a:hover,
+    .sidebar ul li.active a {
+      background-color: #007bff;
+      color: #fff;
     }
+
+    .sidebar-logout-item button {
+      width: 100%;
+    }
+
+    .nav-btn-logout-sidebar {
+      background-color: #f8f9fa;
+      color: #343a40;
+      border: none;
+    }
+
+    .nav-btn-logout-sidebar:hover {
+      background-color: #e2e6ea;
+    }
+
+    .main-content {
+      margin-left: 260px;
+      padding: 20px 40px;
+      width: calc(100% - 260px);
+    }
+
+    .main-card-header {
+      background-color: #007bff;
+    }
+
+    .admin-card {
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    .category-title {
+      font-size: 1.25rem;
+      font-weight: bold;
+      margin-top: 30px;
+      color: #007bff;
+    }
+
+    .video-card {
+      background: #fff;
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-left: 5px solid #007bff;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+
     .no-results {
       font-style: italic;
       color: #777;
     }
   </style>
 </head>
-<body ng-controller="UserController">
 
-  <nav class="navbar navbar-dark bg-dark">
-    <div class="container-fluid d-flex justify-content-between align-items-center">
-      <span class="navbar-brand mb-0 h1">📺 Media Viewer</span>
-      <button class="btn btn-outline-light" ng-click="logout()">🔓 Logout</button>
+<body ng-controller="UserController" class="admin-background">
+
+  <!-- Sidebar -->
+  <nav id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <h3><i class="fas fa-photo-video"></i> Media Viewer</h3>
     </div>
+    <ul class="list-unstyled components">
+      <p class="sidebar-user-info"><i class="fas fa-user-circle"></i> Viewer</p>
+      <li class="active">
+        <a href="#"><i class="fas fa-th-list"></i> Videos</a>
+      </li>
+      <li class="sidebar-logout-item">
+        <button class="btn btn-light nav-btn-logout-sidebar" ng-click="logout()">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </li>
+    </ul>
   </nav>
 
-  <div class="container">
-    <input type="text" class="form-control mb-4" ng-model="searchQuery" placeholder="🔍 Search videos by title...">
+  <!-- Main Content -->
+  <div class="main-content">
+    <nav class="navbar navbar-expand-lg navbar-dark content-navbar mb-3">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Video Dashboard</a>
+        <form class="form-inline my-2 my-lg-0 w-100 ml-3">
+          <input class="form-control w-50" type="search" ng-model="searchQuery" placeholder="Search videos..." aria-label="Search">
+        </form>
+      </div>
+    </nav>
 
     <div ng-if="isEmpty(groupedVideos)">
       <p class="no-results">No videos found.</p>
     </div>
 
     <div ng-repeat="(category, videos) in groupedVideos">
-      <div class="category-title mt-4">{{ category }}</div>
-      <div class="video-card" ng-repeat="video in videos">
-        <strong>{{ video.title }}</strong><br>
-        <a ng-href="{{ video.url }}" target="_blank">{{ video.url }}</a>
+      <div class="card admin-card mb-4">
+        <div class="card-header main-card-header text-white">
+          <h5 class="mb-0"><i class="fas fa-folder-open"></i> {{ category }}</h5>
+        </div>
+        <div class="card-body">
+          <div class="video-card" ng-repeat="video in videos | filter:{title: searchQuery}">
+            <strong>{{ video.title }}</strong><br>
+            <a ng-href="{{ video.url }}" target="_blank">{{ video.url }}</a>
+          </div>
+        </div>
       </div>
     </div>
   </div>

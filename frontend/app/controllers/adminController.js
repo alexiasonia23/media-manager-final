@@ -4,8 +4,8 @@ angular.module('MediaApp')
     $scope.categories = [];
     $scope.videos = [];
     $scope.newUser = {};
-    $scope.newCategory = '';
-    $scope.video = {};
+    $scope.newCategory = {};
+    $scope.newVideo = {};
 
     // ✅ Logout with confirmation
    $scope.logout = function () {
@@ -50,9 +50,13 @@ angular.module('MediaApp')
 
     // CATEGORIES
     $scope.addCategory = function () {
-      if (!$scope.newCategory) return;
-      apiService.addCategory({ name: $scope.newCategory }).then(() => {
-        $scope.newCategory = '';
+      console.log('newCategory:', $scope.newCategory); 
+
+      if (!$scope.newCategory.name) return;
+
+      console.log("Sending category:", $scope.newCategory); // DEBUG LOG
+      apiService.addCategory($scope.newCategory).then(() => {
+        $scope.newCategory = {};
         loadAll();
       });
     };
@@ -63,9 +67,9 @@ angular.module('MediaApp')
 
     // VIDEOS
     $scope.addVideo = function () {
-      if (!$scope.video.title || !$scope.video.url || !$scope.video.categoryId) return;
-      apiService.addVideo($scope.video).then(() => {
-        $scope.video = {};
+      if (!$scope.newVideo.title || !$scope.newVideo.url || !$scope.newVideo.categoryId) return;
+      apiService.addVideo($scope.newVideo).then(() => {
+        $scope.newVideo = {};
         loadAll();
       });
     };
